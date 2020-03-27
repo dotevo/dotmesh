@@ -6,3 +6,5 @@ relative_links:
 include:
   - README.md
   - ABOUT-pl.md
+
+theme: jekyll-theme-dinky
