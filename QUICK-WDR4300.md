@@ -1,94 +1,4 @@
-## DotMesh
-
-Zanim zaczniesz czytać dalej!
-
-Musisz wiedzieć, że nie jestem z wykształcenia osobą zajmującą się sieciami, ani bezpieczeństwem. Projekt zaś jest w bardzo wczesnej fazie i nie biorę odpowiedzialności za ew. problemy lub uszkodzenia sprzętu.
-
-Chętnie przyjmę pomoc i usłyszę krytykę.
-
-### Początek
-
-Sieć mesh (kratowa/siatkowa) nie jest pojęciem ani nowym, ani innowacyjnym. Zaś na świecie powstało wiele projektów, które skupiają całe społeczności na tworzeniu sieci typu mesh aby zapewnić sobie alternatywne połączenia z interenetem:
-
-Przykładowe społeczności:
-- https://freifunk.net/
-- https://guifi.net/
-
-DotMesh jest jednak projektem w innej warstwie i nie zapewnia połącznia z interenetem ale oczywiście może pozwolić zrealizować takie połączenia o czym później.
-
-Wpadłem na pomysł DotMesh gdy zakupiłem drugie mieszkanie. Są oddalone od siebie o 100m więc można bez problemu spiąć je w jedną sieć używając technologii wifi lecz nie jest to takie proste gdyż nie da się złapać kontaktu wzrokowego. Pomyślałem wtedy, że można stworzyć infrastrukturę typu mesh, która mogłaby pomóc rozwiązać tego typu problemy.
-
-### Założenia
-
-1. Chcę stworzyć sieć MESH dostępną dla wszystkich
-2. Chcę mieć możliwość wykorzystania internetu z innego posiadanego węzła
-3. Nie chcę udostępniać swojego internetu innym użytkownikom sieci gdyż mogłoby się to wiązać z problemami prawnymi w razie dokonania przestępstwa
-
-### Technologie
-
-Podczas powstawania projektu musiałem się zdecydować na pewne technologie i niektóre z nich (ale nie wszystkie) są obowiązkowe aby połączyć się z siecią DotMesh.
-
-#### Urządzenie
-
-Cały projekt powstaje na: TP-LINK WDR4300 lecz na innych urządzeniach wspieranych przez OpenWRT powinien również działać. Konfiguracja takiego urządznia może wyglądać nieco inaczej. 
-
-#### OpenWrt
-
-Użyłem oprogramowania OpenWRT dla urządenia jednak dla ułatwienia nie jest to standardowa kompilacja lecz ze strony https://dl.eko.one.pl Dzięki temu oprogramowanie od razu zawiera kilka przydatnych pakietów. Mam nadzieję, że projekt będzie posiadał swoją kompilację w przyszłości.
-
-#### Batman-adv
-
-*Node: Dopisać opis*
-
-Batman-adv to projekt, który zapewnia tworzenie sieci mesh w warstwie 2. Oznacza to tyle, że działa jak duży switch.
-
-#### BMX7
-
-*Node: Dopisać opis*
-
-BMX7 w odróżnieniu od Batman-adv działa na warstwie 3.
-
-### Konfiguracja
-
-#### Krok 1. Instalacja OpenWrt
-
-1. Jeśli nigdy wcześnie nie używałeś OpenWRT to zaczęcam do przeczytania oficjalnych instrukcji o tym jak zainstalować go na swoim urządzeniu.
-
-2. Jeśli już posiadasz na urządzeniu OpenWRT to użyj tego obrazu i wgraj go zgodnie z oficjalnymi instrukcjami:
-https://dl.eko.one.pl/openwrt-19.07/targets/ath79/generic/openwrt-19.07-snapshot-r10949-c56ed72d2b-ath79-generic-tplink_tl-wdr4300-v1-squashfs-sysupgrade.bin
-
-3. Spróbuj się połączyć z routerem pod adresem http://192.168.1.1
-
-#### Krok 2. Dodatkowa przestrzeń
-
-Projekt prawdopodobnie zmieściłby się na routerze gdyby był odpowiednio skompilowany. Nie jest to jednak aktualnie priorytet więc używam dodatkowej przestrzeni podpinając starego pendrive (128MB) do USB. Ma to 2 zalety. Po pierwsze jeśli sporo dodatkowego miejsca. Po drugie dodatkowa przestrzeń działa jako overlay, więc w razie błędnej konfiguracji po wypięciu pendriva dostanę niezmienioną konfigurację. Mogę wtedy sformatować pendriva i zacząć wszystko od początku.
-
-1. Pendrive powinien być sformatowany jakimś sensownym systemem plików (np. ext4)
-*Dodać opis do GPARTED*
-
-2. Wepnij pendrive do USB
-
-3. System -> Punkty montowania -> Punkty montowania
-Dodaj podpiętego pendrive jako /overlay
-
-4. Zrestartuj router i jeśli wszytsko zrobiłeś dobrze to powinieneś zobaczyć dodatkową przestrzeń
-
-#### Alternatywna droga
-
-Jeśli jesteś lenwiwy i nie chcesz wiedzieć co i dlaczego zostało zmienione przejdź do kroku AZ
-
-#### Krok 3. Konfiguracja switch
-
-#### Krok 4. Instalacja i konfiguracja batman-adv
-
-#### Krok 5. Instalacja i konfiguracja BMX7
-
-#### Krok 6. Instalacja i konfiguracja VPN
-
-#### Krok 7. Instalacja i konfiguracja MWAN
-
-
-#### Alternatywny Krok AZ.
+# WDR-4300
 
 **TODO**
 
@@ -97,56 +7,55 @@ opkg update
 opkg install ....
 ```
 
-Plik /etc/config/network
+/etc/config/network
+
 ```
+config globals 'globals'
+    option ula_prefix 'fdc6:3a70:ea96::/48'
+
 config interface 'loopback'
     option ifname 'lo'
     option proto 'static'
     option ipaddr '127.0.0.1'
     option netmask '255.0.0.0'
 
-config globals 'globals'
-    option ula_prefix 'fdc6:3a70:ea96::/48'
-
 # SWITCHES
-config switch    
-    option name 'switch0'    
-    option reset '1'     
-    option enable_vlan '1'       
-     
-config switch_vlan       
-    option device 'switch0'      
-    option vlan '1'      
-    option vid '1'       
-    option ports '0t 2'      
-     
-config switch_vlan       
-    option device 'switch0'      
-    option vlan '2'      
-    option vid '2'       
-    option ports '0t 3'      
-     
-config switch_vlan       
-    option device 'switch0'      
-    option vlan '3'      
-    option vid '3'       
-    option ports '0t 4'      
-     
-config switch_vlan       
-    option device 'switch0'     
-    option vlan '4'     
-    option vid '4'      
-    option ports '0t 5'      
-     
-config switch_vlan       
-    option device 'switch0'      
-    option vlan '5'      
-    option ports '0t 1'      
-    option vid '5'   
+config switch
+    option name 'switch0'
+    option reset '1'
+    option enable_vlan '1'
 
+config switch_vlan
+    option device 'switch0'
+    option vlan '1'
+    option vid '1'
+    option ports '0t 2'
+
+config switch_vlan
+    option device 'switch0'
+    option vlan '2'
+    option vid '2'
+    option ports '0t 3'
+
+config switch_vlan
+    option device 'switch0'
+    option vlan '3'
+    option vid '3'
+    option ports '0t 4'
+
+config switch_vlan
+    option device 'switch0'
+    option vlan '4'
+    option vid '4'
+    option ports '0t 5'
+
+config switch_vlan
+    option device 'switch0'
+    option vlan '5'
+    option ports '0t 1'
+    option vid '5'
 
 # LAN  WIFI + eth0.1
-
 config interface 'lan'
     option type 'bridge'
     option proto 'static'
@@ -170,14 +79,14 @@ config interface 'wan6'
 config interface 'wwan'
     option proto 'dhcp'
 
-config interface 'wan_master'    
-    option ifname 'tun1'     
+config interface 'wan_master'
+    option ifname 'tun1'
     option proto 'none'
 
-config route 'default'       
-    option interface 'wan_master'    
-    option gateway '10.10.10.1'      
-    option target '0.0.0.0'      
+config route 'default'
+    option interface 'wan_master'
+    option gateway '10.10.10.1'
+    option target '0.0.0.0'
     option netmask '0.0.0.0'
 
 # MESH WIFI + eth0.2
@@ -218,7 +127,8 @@ config interface 'vpn'
     option proto 'none'
 ```
 
-Plik cat /etc/config/wireless 
+Plik cat /etc/config/wireless
+
 ```
 config wifi-device 'radio0'
 	option type 'mac80211'
@@ -256,7 +166,7 @@ config wifi-iface 'mesh0'
 ```
 
 ```
-cat /etc/config/bmx7 
+cat /etc/config/bmx7
 
 # for more information:
 # http://bmx6.net/projects/bmx6/wiki
@@ -308,7 +218,6 @@ config 'tunDev' default
 
 ```
 
-
 ```
 cat /etc/config/openvpn
 config openvpn 'server'
@@ -349,14 +258,13 @@ config openvpn 'clientToMaster'
 	option cert '/etc/openvpn/slave1.crt'
 	option key '/etc/openvpn/slave1.key'
 	option enabled '1'
-        option log '/tmp/openvpn_clientToMaster.log' 
+        option log '/tmp/openvpn_clientToMaster.log'
         option status '/tmp/openvpn_clientToMaster.status'
 
 ```
 
-
 ```
-cat /etc/config/firewall 
+cat /etc/config/firewall
 
 config defaults
 	option syn_flood '1'
