@@ -15,6 +15,15 @@ config wifi-device 'radio1'
 	option htmode 'HT20'
 	option country 'PL'
 
+# LAN
+config wifi-iface 'local_radio0'
+        option device 'radio0'
+        option network 'lan'
+        option mode 'ap'
+        option key 'HASLOHASLO'
+        option ssid 'DotMesh'
+        option encryption 'psk2'
+
 # MESH
 config wifi-iface 'mesh0'
 	option device 'radio1'

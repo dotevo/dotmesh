@@ -14,6 +14,7 @@
 Projekt prawdopodobnie zmieściłby się na routerze gdyby był odpowiednio skompilowany. Nie jest to jednak aktualnie priorytet więc używam dodatkowej przestrzeni podpinając starego pendrive (128MB) do USB. Ma to 2 zalety. Po pierwsze jest sporo dodatkowego miejsca. Po drugie dodatkowa przestrzeń działa jako overlay, więc w razie błędnej konfiguracji po wypięciu pendriva dostanę niezmienioną konfigurację. Mogę wtedy sformatować pendriva i zacząć wszystko od początku.
 
 1. Pendrive powinien być sformatowany jakimś sensownym systemem plików (np. ext4)
+
    _Dodać opis do GPARTED_
 
 2. Wepnij pendrive do USB
@@ -112,7 +113,15 @@ Oraz prawdopodobnie zalogować się ponownie na router, który będzie mieć ju�
 
 ### WIFI
 
-TODO
+```
+config wifi-iface 'local_radio0'
+        option device 'radio0'
+        option network 'lan'
+        option mode 'ap'
+        option key 'HASLOHASLO'
+        option ssid 'DotMesh'
+        option encryption 'psk2'
+```
 
 ## Krok 4. Instalacja i konfiguracja batman-adv
 
@@ -270,6 +279,12 @@ PING fd70:9b50:9900:8d6b:1581:20c9:f9f6:76c8 (fd70:9b50:9900:8d6b:1581:20c9:f9f6
 round-trip min/avg/max = 1.671/1.671/1.671 ms
 ```
 
-## Krok 6. Instalacja i konfiguracja VPN
+## Kolejne kroki
 
-## Krok 7. Instalacja i konfiguracja MWAN
+### Łączenie sieci w jedną
+
+[Konfiguracja Tinc](TINC.md)
+
+### Łączenie z siecią przez OpenVPN
+
+[Konfiguracja OpenVPN](OpenVPN.md)
