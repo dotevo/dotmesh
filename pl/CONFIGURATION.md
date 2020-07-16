@@ -1,34 +1,14 @@
 # Konfiguracja
 
-## Krok 1. Instalacja OpenWrt
+## Wstęp 1. Instalacja OpenWrt
 
 1. Jeśli nigdy wcześnie nie używałeś OpenWRT to zaczęcam do przeczytania oficjalnych instrukcji o tym jak zainstalować go na swoim urządzeniu.
 
-2. Jeśli już posiadasz na urządzeniu OpenWRT to użyj tego obrazu i wgraj go zgodnie z oficjalnymi instrukcjami:
-   https://dl.eko.one.pl/openwrt-19.07/targets/ath79/generic/openwrt-19.07-snapshot-r10949-c56ed72d2b-ath79-generic-tplink_tl-wdr4300-v1-squashfs-sysupgrade.bin
+2. Jeśli już posiadasz na urządzeniu OpenWRT to użyj tego obrazu i wgraj go zgodnie z oficjalnymi instrukcjami.
 
 3. Spróbuj się połączyć z routerem pod adresem http://192.168.1.1
 
-## Krok 2. Dodatkowa przestrzeń
-
-Projekt prawdopodobnie zmieściłby się na routerze gdyby był odpowiednio skompilowany. Nie jest to jednak aktualnie priorytet więc używam dodatkowej przestrzeni podpinając starego pendrive (128MB) do USB. Ma to 2 zalety. Po pierwsze jest sporo dodatkowego miejsca. Po drugie dodatkowa przestrzeń działa jako overlay, więc w razie błędnej konfiguracji po wypięciu pendriva dostanę niezmienioną konfigurację. Mogę wtedy sformatować pendriva i zacząć wszystko od początku.
-
-1. Pendrive powinien być sformatowany jakimś sensownym systemem plików (np. ext4)
-
-   _Dodać opis do GPARTED_
-
-2. Wepnij pendrive do USB
-
-3. System -> Punkty montowania -> Punkty montowania
-   Dodaj podpiętego pendrive jako /overlay
-
-4. Zrestartuj router i jeśli wszytsko zrobiłeś dobrze to powinieneś zobaczyć dodatkową przestrzeń
-
-## Alternatywna droga
-
-Jeśli jesteś lenwiwy i nie chcesz wiedzieć co i dlaczego zostało zmienione przejdź do [szybkiej instrukcji](QUICK-WDR4300.md).
-
-## Krok 3. Konfiguracja portów
+## Krok 1. Konfiguracja portów
 
 **Uwaga! Zanim zresetujesz router i zastosujesz konfigurację przejdź do ostatniego kroku**
 
@@ -42,6 +22,7 @@ Jeśli chodzi o VLAN to zastosowana konfiguracja jest następująca:
 eth0.1 -> WAN
 eth0.2 -> LAN
 eth0.3 -> MESH
+eth0.4 -> TINC
 ```
 
 Takiej konfiguracji portów można dokonać z poziomu LUCI lub w pliku /etc/config/network
@@ -63,14 +44,20 @@ config switch_vlan
 config switch_vlan
 	option device 'switch0'
 	option vlan '2'
-	option ports '3 2 0t'
+	option ports '2 0t'
 	option vid '2'
 
 config switch_vlan
 	option device 'switch0'
 	option vlan '3'
-	option ports '5 4 0'
+	option ports '4 3 0'
 	option vid '3'
+
+config switch_vlan
+	option device 'switch0'
+	option vlan '4'
+	option ports '5 0'
+	option vid '4'
 ```
 
 ### LAN
@@ -112,6 +99,8 @@ service network reload
 Oraz prawdopodobnie zalogować się ponownie na router, który będzie mieć już inny adres IP
 
 ### WIFI
+
+FIXME: LAN?
 
 ```
 config wifi-iface 'local_radio0'
